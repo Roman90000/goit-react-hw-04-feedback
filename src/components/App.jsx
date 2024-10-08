@@ -1,60 +1,60 @@
-import { Component } from 'react';
+//
+// import { Component } from 'react';
 import { Statistics } from './Statistics/Statistics';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { GlobalStyle } from './GlobalStyle/GlobalStyle';
+import { useState } from 'react';
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  addState = name => {
-    if (Object.keys(this.state).includes(name)) {
-      this.setState(prevState => ({
-        [name]: (prevState[name] += 1),
-      }));
+  const addState = name => {
+    switch (name) {
+      case 'good':
+        setGood(good + 1);
+        break;
+      case 'neutral':
+        setNeutral(neutral + 1);
+        break;
+      case 'bad':
+        setBad(bad + 1);
+        break;
+      default:
+        return;
     }
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
-  };
-
-  countPositiveFeedbackPercentage = () => {
-    const result = this.countTotalFeedback();
+  const countPositiveFeedbackPercentage = () => {
+    const result = good + neutral + bad;
     if (!result) {
       return 0;
     }
-    return Math.round((this.state.good * 100) / result);
+    return Math.round((good * 100) / result);
   };
 
-  render() {
-    const total = this.countTotalFeedback();
-    const positive = this.countPositiveFeedbackPercentage();
-    const { good, neutral, bad } = this.state;
+  const total = good + neutral + bad;
+  const positive = countPositiveFeedbackPercentage();
 
-    return (
-      <div>
-        <h1>Please leave feedback</h1>
-        <FeedbackOptions options={this.addState} />
-        <h2>Statistics</h2>
-        {!total ? (
-          'There is no feedback'
-        ) : (
-          <Statistics
-            good={good}
-            neutral={neutral}
-            bad={bad}
-            total={total}
-            positivePercentage={positive}
-          />
-        )}
+  return (
+    <div>
+      <h1>Please leave feedback</h1>
+      <FeedbackOptions options={addState} />
+      <h2>Statistics</h2>
+      {!total ? (
+        'There is no feedback'
+      ) : (
+        <Statistics
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          total={total}
+          positivePercentage={positive}
+        />
+      )}
 
-        <GlobalStyle />
-      </div>
-    );
-  }
-}
+      <GlobalStyle />
+    </div>
+  );
+};
